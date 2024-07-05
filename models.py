@@ -1,5 +1,6 @@
 """Models for Blogly."""
 from flask_sqlalchemy import SQLAlchemy
+import datetime
 
 db = SQLAlchemy()
 
@@ -17,13 +18,25 @@ class User(db.Model):
   id = db.Column(db.Integer, 
                  primary_key=True)
   first_name = db.Column(db.Text,
-                         nullable=True)
+                         nullable=False)
   last_name = db.Column(db.Text,
-                         nullable=True)
+                         nullable=False)
   image_url = db.Column(db.Text,
                         nullable=False, default=DEFAULT_URL)
   
+  posts = db.relationship("Posts", backref="user", cascade="all, delete-orphan")
+
   @property
   def full_name(self):
     """To show full name for user"""
     return f"{self.first_name} {self.last_name}"
+
+class Posts(db.Model):
+  """Posts on the website"""
+  __tablename__ = 'posts'
+
+  id = db.Column(db.Integer, primary_key=True)
+  title = db.Column(db.Text, nullable=False)
+  content = db.Column(db.Text, nullable=False)
+  created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
+  user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
