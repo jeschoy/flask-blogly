@@ -1,7 +1,7 @@
 from unittest import TestCase
 from app import app
 from flask import session
-from models import db, User
+from models import db, User, Posts
 
 class UserTests(TestCase):
   def setUp(self):

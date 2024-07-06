@@ -6,7 +6,7 @@ block content %}
     <img
       src="{{ user.image_url }}"
       alt="{{ user.full_name }}"
-      class="img-fluid"
+      class="img-fluid rounded-circle p-2"
     />
   </div>
   {% endif %}
@@ -31,17 +31,24 @@ block content %}
       </button>
     </form>
   </div>
+  <div class="border row p-6">
+    <ul class="p-2">
+      <h4 class="ml-2">Posts by {{user.first_name}}:</h4>
+      {% for post in user.posts %} {% if post %}
+      <li class="pl-5"><a href="/posts/{{post.id}}">{{ post.title }}</a></li>
+      {% elif post %}
+      <p>No posts for this user yet!</p>
+      {% endif %} {% endfor %}
+    </ul>
+    <div class="p-2">
+      <a class="btn btn-success btn-sm" href="/users/{{user.id}}/new"
+        >Add Post</a
+      >
+    </div>
+  </div>
 </div>
-<div>
-  <ul>
-    <h3>Posts:</h3>
-    {% for post in user.posts %}
-    <li><a href="/posts/{{post.id}}">{{ post.title }}</a></li>
-    {% endfor %}
-  </ul>
-  <button class="btn btn-secondary btn-sm">Add Post</button>
-</div>
-<div class="p-4">
+
+<div class="p-3 mt-0">
   <a class="btn btn-secondary btn-sm" href="/users">Return to users</a>
 </div>
 {% endblock %}

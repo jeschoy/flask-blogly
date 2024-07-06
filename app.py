@@ -2,7 +2,7 @@
 
 from flask import Flask, render_template, redirect, request
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User, Posts
+from models import db, connect_db, User, Posts, DEFAULT_URL
 
 app = Flask(__name__)
 
@@ -42,10 +42,10 @@ def update_edit(user_id):
 
   user.first_name = request.form['first_name']
   user.last_name = request.form['last_name']
-  user.image_url = request.form['image_url']
+  user.image_url = request.form['image_url'] or DEFAULT_URL
 
   db.session.add(user)
-  db.session.commit() 
+  db.session.commit()
 
   return redirect(f"/users/{user_id}")
 
@@ -81,12 +81,55 @@ def delete_user(user_id):
   db.session.commit()
   return redirect('/users')
 
-@app.route('/users/<int:user_id>/new-post')
-def new_post(user_id):
-  user = User.query.get_or_404(user_id)
-  return render_template('posts/new-post.html', user=user)
-
 @app.route('/posts/<int:post_id>')
 def post_page(post_id):
+  """To render a page for a post"""
   post = Posts.query.get_or_404(post_id)
-  return render_template('/posts/post_content.html', post=post)
+  user = User.query.get_or_404(post.user_id)
+  return render_template('/posts/content.html', post=post, user=user)
+
+@app.route('/posts/<int:post_id>/edit')
+def edit_post(post_id):
+  """Show post edit page"""
+  post = Posts.query.get_or_404(post_id)
+  return render_template('posts/edit.html', post=post)
+
+@app.route('/posts/<int:post_id>/edit', methods=["POST"])
+def update_post(post_id):
+  """To submit edited post"""
+  post = Posts.query.get_or_404(post_id)
+
+  post.title = request.form['title']
+  post.content = request.form['content']
+
+  db.session.add(post)
+  db.session.commit()
+
+  return redirect(f'/posts/{post_id}')
+
+@app.route('/users/<int:user_id>/new', methods=["GET"])
+def new_post_form(user_id):
+  """To show form to add new post"""
+  user = User.query.get_or_404(user_id)
+  return render_template('posts/new.html', user=user)
+
+@app.route('/users/<int:user_id>/new', methods=["POST"])
+def add_new_post(user_id):
+  """Adding new post to the database"""
+  user = User.query.get_or_404(user_id)
+  new_post = Posts(
+    title=request.form['title'],
+    content=request.form['content'], user=user)
+
+  db.session.add(new_post)
+  db.session.commit()
+
+  return redirect(f'/users/{user_id}')
+
+@app.route('/posts/<int:post_id>/delete', methods=["POST"])
+def delete_post(post_id):
+  """To remove an existing post"""
+  post = Posts.query.get_or_404(post_id)
+  db.session.delete(post)
+  db.session.commit()
+  return redirect(f'/users/{post.user_id}')
