@@ -22,7 +22,38 @@ content %}
       class="form-control input-lg"
     />
   </div>
-  <div class="mt-4">
+  <div class="form-check">
+    {% for tag in tags %}
+    <div>
+      <input class="form-check-input"
+             type="checkbox"
+             value="{{ tag.id }}"
+             id="tag_{{ tag.id }}"
+             name="tags">
+      <label class="form-check-label" for="tag_{{ tag.id }}">
+        {{ tag.name }}
+      </label>
+    </div>
+    {% endfor %}
+  </div>
+  <!-- <div class="p-5">
+    <form action="">
+      <h5>Tags:</h5>
+      {% for tag in tags %}
+      <ul>
+        <input
+          type="checkbox"
+          id="{{tag.name}}"
+          name="{{tag.name}}"
+          value="{{tag.name}}"
+        />
+        <label for="{{tag.name}}">{{tag.name}}</label>
+      </ul>
+
+      {% endfor %}
+    </form> -->
+  </div>
+  <div class="mt-0 p-4">
     <a class="btn btn-secondary" href="/users/{{user.id}}">Cancel</a>
     <button class="btn btn-success" type="submit">Create Post!</button>
   </div>

@@ -1,0 +1,37 @@
+{% extends 'base.html' %} {% block title %}{{tags.name}}{% endblock %} {%
+  block content %}
+  
+    <div class="col-sm-10 col-12 row p-5">
+      <h1>{{ tags.name }}</h1>
+      <div>
+        <ul>
+          {% if tags.posts == [] %}
+          <p class="text-secondary">No posts for this tag yet!</p>
+        {% endif %}
+        {% for post in tags.posts %}
+          <li><a href="/posts/{{post.id}}">{{post.title}}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      <form>
+        <button
+          class="btn btn-primary btn-sm"
+          formmethod="GET"
+          formaction="/tags/{{tags.id}}/edit"
+        >
+          Edit
+        </button>
+        <button
+          class="btn btn-danger btn-sm"
+          formmethod="POST"
+        >
+          Delete
+        </button>
+      </form>
+    </div>
+  </div>
+  <div class="p-4">
+    <a class="btn btn-secondary btn-sm" href="/users">Return to users</a>
+    <a class="btn btn-secondary btn-sm" href="/tags">Return to tags</a>
+  </div>
+  {% endblock %}

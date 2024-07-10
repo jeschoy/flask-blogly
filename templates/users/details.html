@@ -34,11 +34,11 @@ block content %}
   <div class="border row p-6">
     <ul class="p-2">
       <h4 class="ml-2">Posts by {{user.first_name}}:</h4>
-      {% for post in user.posts %} {% if post %}
+      {% if user.posts == [] %}
+      <p class="text-secondary">No posts by this user yet!</p>
+      {% else %} {% for post in user.posts %}
       <li class="pl-5"><a href="/posts/{{post.id}}">{{ post.title }}</a></li>
-      {% elif post %}
-      <p>No posts for this user yet!</p>
-      {% endif %} {% endfor %}
+      {% endfor %} {% endif %}
     </ul>
     <div class="p-2">
       <a class="btn btn-success btn-sm" href="/users/{{user.id}}/new"
